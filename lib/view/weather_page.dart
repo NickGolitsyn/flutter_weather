@@ -141,8 +141,8 @@ class _WeatherPageState extends State<WeatherPage> {
             builder: (ctx, AsyncSnapshot<WeatherModel> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
-                  return const Center(
-                    child: Text('Error'),
+                  return Center(
+                    child: Text(snapshot.error.toString()),
                   );
                 }
                 if (snapshot.hasData) {
