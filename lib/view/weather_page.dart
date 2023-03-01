@@ -1,8 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:weather_app/logic/models/weather_model.dart';
 import 'package:weather_app/logic/services/call_to_api.dart';
 
@@ -14,16 +10,14 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  Future<WeatherModel> getData(bool isCurrentCity, String cityName) async {
-    return await CallToApi().callWeatherAPi(isCurrentCity, cityName);
+  Future<WeatherModel> getData(String cityName) async {
+    return await CallToApi().callWeatherAPi(cityName);
   }
-
-  TextEditingController textController = TextEditingController(text: "");
-  Future<WeatherModel>? _myData;
+  Future<WeatherModel>? _weatherData;
   @override
   void initState() {
     setState(() {
-      _myData = getData(true, "London");
+      _weatherData = getData("London");
     });
 
     super.initState();
@@ -37,21 +31,15 @@ class _WeatherPageState extends State<WeatherPage> {
       body: FutureBuilder(
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // If error occured
             if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  '${snapshot.error.toString()} occurred',
-                  style: TextStyle(fontSize: 18),
-                ),
+              return const Center(
+                child: Text('Error'),
               );
-
-              // if data has no errors
-            } else if (snapshot.hasData) {
-              // Extracting data from snapshot object
+            } 
+            else if (snapshot.hasData) {
               final data = snapshot.data as WeatherModel;
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 width: double.infinity,
                 height: double.infinity,
                 child: SafeArea(
@@ -65,23 +53,20 @@ class _WeatherPageState extends State<WeatherPage> {
                               padding: const EdgeInsets.only(left: 8),
                               child: InkWell(
                                 onTap: () => setState(() {
-                                  _myData = getData(false, 'Moscow');
+                                  _weatherData = getData('Moscow');
                                 }),
                                 child: Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(topLeft: Radius.circular(6), bottomLeft: Radius.circular(6)),
                                     color: Color.fromARGB(255, 199, 199, 199),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
                                       vertical: 10,
                                     ),
                                     child: Align(
                                       child: Text(
                                         'Moscow',
-                                        // style: TextStyle(
-                                        //   color: priority != Priority.high ? Colors.black : Colors.white,
-                                        // ),
                                       ),
                                     ),
                                   ),
@@ -92,20 +77,17 @@ class _WeatherPageState extends State<WeatherPage> {
                           Expanded(
                             child: InkWell(
                               onTap: () => setState(() {
-                                _myData = getData(false, 'Paris');
+                                _weatherData = getData('Paris');
                               }),
                               child: Container(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                color: const Color.fromARGB(255, 199, 199, 199),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
                                     vertical: 10,
                                   ),
                                   child: Align(
                                     child: Text(
                                       'Paris',
-                                      // style: TextStyle(
-                                      //   color: priority != Priority.medium ? Colors.black : Colors.white,
-                                      // ),
                                     ),
                                   ),
                                 ),
@@ -115,20 +97,17 @@ class _WeatherPageState extends State<WeatherPage> {
                           Expanded(
                             child: InkWell(
                               onTap: () => setState(() {
-                                _myData = getData(false, 'New York');
+                                _weatherData = getData('New York');
                               }),
                               child: Container(
-                                color: Color.fromARGB(255, 199, 199, 199),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                color: const Color.fromARGB(255, 199, 199, 199),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
                                     vertical: 10,
                                   ),
                                   child: Align(
                                     child: Text(
                                       'New York',
-                                      // style: TextStyle(
-                                      //   color: priority != Priority.low ? Colors.black : Colors.white,
-                                      // ),
                                     ),
                                   ),
                                 ),
@@ -140,23 +119,20 @@ class _WeatherPageState extends State<WeatherPage> {
                               padding: const EdgeInsets.only(right: 8),
                               child: InkWell(
                                 onTap: () => setState(() {
-                                  _myData = getData(false, 'London');
+                                  _weatherData = getData('London');
                                 }),
                                 child: Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(topRight: Radius.circular(6), bottomRight: Radius.circular(6)),
                                     color: Color.fromARGB(255, 199, 199, 199),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
                                       vertical: 10,
                                     ),
                                     child: Align(
                                       child: Text(
                                         'London',
-                                        // style: TextStyle(
-                                        //   color: priority != Priority.none ? Colors.black : Colors.white,
-                                        // ),
                                       ),
                                     ),
                                   ),
@@ -170,30 +146,85 @@ class _WeatherPageState extends State<WeatherPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Image.network(
+                              "http://openweathermap.org/img/wn/${data.icon}@2x.png"
+                            ),
                             Text(
                               data.city,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 24,
-                                fontFamily: 'Poppins',
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    const Text(
+                                      "Sunrise",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${data.sunrise}",
+                                      // "${new Date(data.sunrise*1000)}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 25,
+                                ),
+                                Column(
+                                  children: [
+                                    const Text(
+                                      "Sunset",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${data.sunset}",
+                                      // "${new Date(data.sunrise*1000)}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
                               height: 25,
                             ),
                             Text(
                               data.desc,
-                              style: TextStyle(color: Colors.black, fontFamily: 'Poppins', fontSize: 16),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16
+                              ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
                             Text(
                               "${data.temp}°C",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 42,
-                                fontFamily: 'Poppins',
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold
                               ),
@@ -207,19 +238,15 @@ class _WeatherPageState extends State<WeatherPage> {
               );
             }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
-          } else {
-            return Center(
-              child: Text("${snapshot.connectionState} occured"),
-            );
           }
-          return Center(
-            child: Text("Server timed out!"),
+          return const Center(
+            child: Text("Error"),
           );
         },
-        future: _myData!,
+        future: _weatherData!,
       ),
     );
   }
