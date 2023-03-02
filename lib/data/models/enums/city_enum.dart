@@ -9,9 +9,9 @@ enum CityEnum {
       case CityEnum.moscow:
         return 'Moscow';
       case CityEnum.london:
-        return 'Paris';
-      case CityEnum.paris:
         return 'London';
+      case CityEnum.paris:
+        return 'Paris';
       case CityEnum.newyork:
         return 'New York';
     }
